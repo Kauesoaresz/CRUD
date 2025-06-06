@@ -9,6 +9,7 @@ CREATE TABLE usuarios (
     role ENUM('admin', 'user') NOT NULL
 );
 
+
 CREATE TABLE categorias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL
@@ -32,4 +33,5 @@ CREATE TABLE cabelos (
     categoria INT NOT NULL,
     FOREIGN KEY (categoria) REFERENCES categorias(id)
 );
+
 

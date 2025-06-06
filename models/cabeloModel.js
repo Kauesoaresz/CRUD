@@ -2,74 +2,33 @@ const db = require('../config/db');
 
 const Cabelo = {
     create: (cabelo, callback) => {
-        const query = 'INSERT INTO cabelos (cabeloname, password, role) VALUES (?, ?, ?)';
-        db.query(query, [cabelo.cabeloname, cabelo.password, cabelo.role], (err, results) => {
-            if (err) {
-                return callback(err);
-            }
-            callback(null, results.insertId);
-        });
+        const query = 'INSERT INTO cabelos (nome, descricao, preco, categoria) VALUES (?, ?, ?, ?)';
+        db.query(query, [cabelo.nome, cabelo.descricao, cabelo.preco, cabelo.categoria], callback);
     },
 
     findById: (id, callback) => {
-        const query = 'SELECT * FROM cabelos WHERE id = ?';
-        db.query(query, [id], (err, results) => {
-            if (err) {
-                return callback(err);
-            }
-            callback(null, results[0]);
-        });
-    },
-
-    findByCabeloname: (cabeloname, callback) => {
-        const query = 'SELECT * FROM cabelos WHERE cabeloname = ?';
-        db.query(query, [cabeloname], (err, results) => {
-            if (err) {
-                return callback(err);
-            }
+        db.query('SELECT * FROM cabelos WHERE id = ?', [id], (err, results) => {
+            if (err) return callback(err);
             callback(null, results[0]);
         });
     },
 
     update: (id, cabelo, callback) => {
-        const query = 'UPDATE cabelos SET cabeloname = ?, password = ?, role = ? WHERE id = ?';
-        db.query(query, [cabelo.cabeloname, cabelo.password, cabelo.role, id], (err, results) => {
-            if (err) {
-                return callback(err);
-            }
-            callback(null, results);
-        });
+        const query = 'UPDATE cabelos SET nome = ?, descricao = ?, preco = ?, categoria = ? WHERE id = ?';
+        db.query(query, [cabelo.nome, cabelo.descricao, cabelo.preco, cabelo.categoria, id], callback);
     },
 
     delete: (id, callback) => {
-        const query = 'DELETE FROM cabelos WHERE id = ?';
-        db.query(query, [id], (err, results) => {
-            if (err) {
-                return callback(err);
-            }
-            callback(null, results);
-        });
+        db.query('DELETE FROM cabelos WHERE id = ?', [id], callback);
     },
 
     getAll: (callback) => {
-        const query = 'SELECT * FROM cabelos';
-        db.query(query, (err, results) => {
-            if (err) {
-                return callback(err);
-            }
-            callback(null, results);
-        });
+        db.query('SELECT * FROM cabelos', callback);
     },
 
     searchByName: (name, callback) => {
-        const query = 'SELECT * FROM cabelos WHERE cabeloname LIKE ?';
-        db.query(query, [`%${name}%`], (err, results) => {
-            if (err) {
-                return callback(err);
-            }
-            callback(null, results);
-        });
-    },    
+        db.query('SELECT * FROM cabelos WHERE nome LIKE ?', [`%${name}%`], callback);
+    }
 };
 
 module.exports = Cabelo;

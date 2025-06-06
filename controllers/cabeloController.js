@@ -3,39 +3,29 @@ const Cabelo = require('../models/cabeloModel');
 const cabeloController = {
     createCabelo: (req, res) => {
         const newCabelo = {
-            cabeloname: req.body.cabeloname,
-            password: req.body.password,
-            role: req.body.role,
+            nome: req.body.nome,
+            descricao: req.body.descricao,
+            preco: req.body.preco,
+            categoria: req.body.categoria
         };
-
-        Cabelo.create(newCabelo, (err, cabeloId) => {
-            if (err) {
-                return res.status(500).json({ error: err });
-            }
+        Cabelo.create(newCabelo, (err) => {
+            if (err) return res.status(500).json({ error: err });
             res.redirect('/cabelos');
-        });
-    },
-
-    getCabeloById: (req, res) => {
-        const cabeloId = req.params.id;
-
-        Cabelo.findById(cabeloId, (err, cabelo) => {
-            if (err) {
-                return res.status(500).json({ error: err });
-            }
-            if (!cabelo) {
-                return res.status(404).json({ message: 'Cabelo not found' });
-            }
-            res.render('cabelos/show', { cabelo });
         });
     },
 
     getAllCabelos: (req, res) => {
         Cabelo.getAll((err, cabelos) => {
-            if (err) {
-                return res.status(500).json({ error: err });
-            }
+            if (err) return res.status(500).json({ error: err });
             res.render('cabelos/index', { cabelos });
+        });
+    },
+
+    getCabeloById: (req, res) => {
+        Cabelo.findById(req.params.id, (err, cabelo) => {
+            if (err) return res.status(500).json({ error: err });
+            if (!cabelo) return res.status(404).json({ message: 'Cabelo não encontrado' });
+            res.render('cabelos/show', { cabelo });
         });
     },
 
@@ -44,56 +34,40 @@ const cabeloController = {
     },
 
     renderEditForm: (req, res) => {
-        const cabeloId = req.params.id;
-
-        Cabelo.findById(cabeloId, (err, cabelo) => {
-            if (err) {
-                return res.status(500).json({ error: err });
-            }
-            if (!cabelo) {
-                return res.status(404).json({ message: 'Cabelo not found' });
-            }
+        Cabelo.findById(req.params.id, (err, cabelo) => {
+            if (err) return res.status(500).json({ error: err });
+            if (!cabelo) return res.status(404).json({ message: 'Cabelo não encontrado' });
             res.render('cabelos/edit', { cabelo });
         });
     },
 
     updateCabelo: (req, res) => {
-        const cabeloId = req.params.id;
         const updatedCabelo = {
-            cabeloname: req.body.cabeloname,
-            password: req.body.password,
-            role: req.body.role,
+            nome: req.body.nome,
+            descricao: req.body.descricao,
+            preco: req.body.preco,
+            categoria: req.body.categoria
         };
-
-        Cabelo.update(cabeloId, updatedCabelo, (err) => {
-            if (err) {
-                return res.status(500).json({ error: err });
-            }
+        Cabelo.update(req.params.id, updatedCabelo, (err) => {
+            if (err) return res.status(500).json({ error: err });
             res.redirect('/cabelos');
         });
     },
 
     deleteCabelo: (req, res) => {
-        const cabeloId = req.params.id;
-
-        Cabelo.delete(cabeloId, (err) => {
-            if (err) {
-                return res.status(500).json({ error: err });
-            }
+        Cabelo.delete(req.params.id, (err) => {
+            if (err) return res.status(500).json({ error: err });
             res.redirect('/cabelos');
         });
     },
 
     searchCabelos: (req, res) => {
         const search = req.query.search || '';
-
         Cabelo.searchByName(search, (err, cabelos) => {
-            if (err) {
-                return res.status(500).json({ error: err });
-            }
+            if (err) return res.status(500).json({ error: err });
             res.json({ cabelos });
         });
-    },
+    }
 };
 
 module.exports = cabeloController;
